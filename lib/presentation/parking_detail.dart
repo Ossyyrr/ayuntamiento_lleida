@@ -44,15 +44,9 @@ class ParkingDetail extends StatelessWidget {
                     runSpacing: 10,
                     children: snapshot.data!
                         .map((sensor) => GestureDetector(
-                              // Al hacer tap que lleve a un link de google maps con un marker
-                              // onTap: () => Navigator.push(
-                              //   context,
-                              //   MaterialPageRoute(
-                              //     builder: (context) => ParkingDetail(
-                              //       parking: parking,
-                              //     ),
-                              //   ),
-                              // ),
+                              // Al hacer tap que lleve a un link de google maps con un marker usando url_launcher, inventa la latitud y longitud
+                              // onTap: () => launchUrl(Uri.parse(// Lanza la URL
+                              //     'https://www.google.com/maps/search/?api=1')), // Lanza la URL
                               child: Container(
                                 width: 150, // Ajusta el tamaño del contenedor
                                 height: 150, // Ajusta el tamaño del contenedor

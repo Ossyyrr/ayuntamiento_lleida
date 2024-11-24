@@ -29,53 +29,55 @@ class HomeScreen extends StatelessWidget {
             itemCount: snapshot.data!.length,
             itemBuilder: (context, index) {
               final parking = snapshot.data![index];
-              return Card(
-                margin:
-                    const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
-                child: Column(
-                  children: [
-                    ListTile(
-                      contentPadding: const EdgeInsets.all(10),
-                      leading:
-                          const Icon(Icons.local_parking, color: Colors.blue),
-                      title: Text(
-                        parking.name,
-                        style: const TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.bold),
-                      ),
-                      trailing: const Icon(Icons.arrow_forward_ios),
-                      onTap: () => Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => ParkingDetail(
-                            parking: parking,
-                          ),
+              return GestureDetector(
+                onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ParkingDetail(
+                      parking: parking,
+                    ),
+                  ),
+                ),
+                child: Card(
+                  margin:
+                      const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+                  child: Column(
+                    children: [
+                      ListTile(
+                        contentPadding: const EdgeInsets.all(10),
+                        leading:
+                            const Icon(Icons.local_parking, color: Colors.blue),
+                        title: Text(
+                          parking.name,
+                          style: const TextStyle(
+                              fontSize: 18, fontWeight: FontWeight.bold),
                         ),
+                        trailing: const Icon(Icons.arrow_forward_ios),
                       ),
-                    ),
-                    StreamBuilder<List<Sensor>>(
-                      stream: sensorsStream(parking.id),
-                      builder: (BuildContext context,
-                          AsyncSnapshot<List<Sensor>> snapshot) {
-                        if (snapshot.hasError) {
-                          return Text(
-                              'Something went wrong: ${snapshot.error}');
-                        }
+                      StreamBuilder<List<Sensor>>(
+                        stream: sensorsStream(parking.id),
+                        builder: (BuildContext context,
+                            AsyncSnapshot<List<Sensor>> snapshot) {
+                          if (snapshot.hasError) {
+                            return Text(
+                                'Something went wrong: ${snapshot.error}');
+                          }
 
-                        if (snapshot.connectionState ==
-                            ConnectionState.waiting) {
-                          return const Text("Loading");
-                        }
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return const Text("Loading");
+                          }
 
-                        final double availableSensors = snapshot.data!
-                                .where((sensor) => sensor.available)
-                                .length /
-                            snapshot.data!.length;
+                          final double availableSensors = snapshot.data!
+                                  .where((sensor) => sensor.available)
+                                  .length /
+                              snapshot.data!.length;
 
-                        return ProgressBar(value: availableSensors);
-                      },
-                    ),
-                  ],
+                          return ProgressBar(value: availableSensors);
+                        },
+                      ),
+                    ],
+                  ),
                 ),
               );
             },

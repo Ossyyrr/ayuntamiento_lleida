@@ -4,7 +4,7 @@ import 'dart:convert';
 class Sensor {
   bool available;
   double timestamp;
-  String spot;
+  int spot;
 
   Sensor({
     required this.available,
@@ -23,7 +23,7 @@ class Sensor {
   Sensor copyWith({
     bool? available,
     double? timestamp,
-    String? spot,
+    int? spot,
   }) {
     return Sensor(
       available: available ?? this.available,
@@ -44,7 +44,7 @@ class Sensor {
     return Sensor(
       available: map['available'] as bool,
       timestamp: map['timestamp'] as double,
-      spot: map['spot'] as String,
+      spot: map['spot'] as int,
     );
   }
 

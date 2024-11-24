@@ -22,25 +22,40 @@ class HomeScreen extends StatelessWidget {
         stream: parkingsStream,
         builder: (BuildContext context, AsyncSnapshot<List<Parking>> snapshot) {
           if (snapshot.hasError) {
-            return const Text('Something went wrong');
+            return Center(child: Text('Error: ${snapshot.error}'));
           }
 
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Text("Loading");
+            return const Center(child: CircularProgressIndicator());
           }
 
-          return ListView(
-            children: snapshot.data!
-                .map((parking) => ListTile(
-                    title: Text(parking.name),
-                    onTap: () => Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => ParkingDetail(
-                                    parking: parking,
-                                  )),
-                        )))
-                .toList(),
+          return ListView.builder(
+            itemCount: snapshot.data!.length,
+            itemBuilder: (context, index) {
+              final parking = snapshot.data![index];
+              return Card(
+                margin:
+                    const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+                child: ListTile(
+                  contentPadding: const EdgeInsets.all(10),
+                  leading: const Icon(Icons.local_parking, color: Colors.blue),
+                  title: Text(
+                    parking.name,
+                    style: const TextStyle(
+                        fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                  trailing: const Icon(Icons.arrow_forward_ios),
+                  onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ParkingDetail(
+                        parking: parking,
+                      ),
+                    ),
+                  ),
+                ),
+              );
+            },
           );
         },
       ),

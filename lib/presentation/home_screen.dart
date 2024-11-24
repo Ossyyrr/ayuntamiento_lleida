@@ -1,13 +1,9 @@
 import 'package:ayuntamiento/core/models/parking.dart';
+import 'package:ayuntamiento/core/models/sensor.dart';
+import 'package:ayuntamiento/data/services/parking_service.dart';
 import 'package:ayuntamiento/presentation/parking_detail.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:ayuntamiento/presentation/widgets/progress_bar.dart';
 import 'package:flutter/material.dart';
-
-final Stream<List<Parking>> parkingsStream = FirebaseFirestore.instance
-    .collection('parkings')
-    .snapshots()
-    .map((snapshot) =>
-        snapshot.docs.map((doc) => Parking.fromJson(doc.data())).toList());
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -36,23 +32,50 @@ class HomeScreen extends StatelessWidget {
               return Card(
                 margin:
                     const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
-                child: ListTile(
-                  contentPadding: const EdgeInsets.all(10),
-                  leading: const Icon(Icons.local_parking, color: Colors.blue),
-                  title: Text(
-                    parking.name,
-                    style: const TextStyle(
-                        fontSize: 18, fontWeight: FontWeight.bold),
-                  ),
-                  trailing: const Icon(Icons.arrow_forward_ios),
-                  onTap: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => ParkingDetail(
-                        parking: parking,
+                child: Column(
+                  children: [
+                    ListTile(
+                      contentPadding: const EdgeInsets.all(10),
+                      leading:
+                          const Icon(Icons.local_parking, color: Colors.blue),
+                      title: Text(
+                        parking.name,
+                        style: const TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.bold),
+                      ),
+                      trailing: const Icon(Icons.arrow_forward_ios),
+                      onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ParkingDetail(
+                            parking: parking,
+                          ),
+                        ),
                       ),
                     ),
-                  ),
+                    StreamBuilder<List<Sensor>>(
+                      stream: sensorsStream(parking.id),
+                      builder: (BuildContext context,
+                          AsyncSnapshot<List<Sensor>> snapshot) {
+                        if (snapshot.hasError) {
+                          return Text(
+                              'Something went wrong: ${snapshot.error}');
+                        }
+
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return const Text("Loading");
+                        }
+
+                        final double availableSensors = snapshot.data!
+                                .where((sensor) => sensor.available)
+                                .length /
+                            snapshot.data!.length;
+
+                        return ProgressBar(value: availableSensors);
+                      },
+                    ),
+                  ],
                 ),
               );
             },

@@ -1,16 +1,8 @@
 import 'package:ayuntamiento/core/models/parking.dart';
 import 'package:ayuntamiento/core/models/sensor.dart';
+import 'package:ayuntamiento/data/services/parking_service.dart';
 import 'package:ayuntamiento/presentation/widgets/progress_bar.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-
-final Stream<List<Sensor>> parkingsStream = FirebaseFirestore.instance
-    .collection('parkings') // Colección principal
-    .doc('p1') // Documento padre
-    .collection('sensors')
-    .snapshots()
-    .map((snapshot) =>
-        snapshot.docs.map((doc) => Sensor.fromJson(doc.data())).toList());
 
 class ParkingDetail extends StatelessWidget {
   const ParkingDetail({
@@ -25,7 +17,7 @@ class ParkingDetail extends StatelessWidget {
         title: const Text('Sensors'),
       ),
       body: StreamBuilder<List<Sensor>>(
-        stream: parkingsStream,
+        stream: sensorsStream(parking.id),
         builder: (BuildContext context, AsyncSnapshot<List<Sensor>> snapshot) {
           if (snapshot.hasError) {
             return Text('Something went wrong: ${snapshot.error}');
@@ -42,23 +34,45 @@ class ParkingDetail extends StatelessWidget {
 
           return Column(
             children: [
-              ProgressBar(value: availableSensors),
+              Card(
+                  margin: const EdgeInsets.all(24),
+                  child: ProgressBar(value: availableSensors)),
               Expanded(
-                child: ListView(
-                  children: snapshot.data!
-                      .map((sensor) => Card(
-                            margin: const EdgeInsets.symmetric(
-                                vertical: 10, horizontal: 15),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15),
-                            ),
-                            elevation: 5,
-                            child: Padding(
-                              padding: const EdgeInsets.all(15),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Row(
+                child: SingleChildScrollView(
+                  child: Wrap(
+                    spacing: 10,
+                    runSpacing: 10,
+                    children: snapshot.data!
+                        .map((sensor) => GestureDetector(
+                              // Al hacer tap que lleve a un link de google maps con un marker
+                              // onTap: () => Navigator.push(
+                              //   context,
+                              //   MaterialPageRoute(
+                              //     builder: (context) => ParkingDetail(
+                              //       parking: parking,
+                              //     ),
+                              //   ),
+                              // ),
+                              child: Container(
+                                width: 150, // Ajusta el tamaño del contenedor
+                                height: 150, // Ajusta el tamaño del contenedor
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(10),
+                                  boxShadow: const [
+                                    BoxShadow(
+                                      color: Colors.black26,
+                                      blurRadius: 3,
+                                      offset: Offset(0, 2),
+                                    ),
+                                  ],
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(15),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
                                     children: [
                                       Icon(
                                         sensor.available
@@ -69,33 +83,37 @@ class ParkingDetail extends StatelessWidget {
                                             : Colors.red,
                                         size: 30,
                                       ),
-                                      const SizedBox(width: 10),
+                                      const SizedBox(height: 10),
                                       Text(
                                         'Spot ${sensor.spot}',
                                         style: const TextStyle(
                                           fontSize: 20,
                                           fontWeight: FontWeight.bold,
                                         ),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                      const SizedBox(height: 10),
+                                      Text(
+                                        sensor.available
+                                            ? 'Available'
+                                            : 'Occupied',
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          color: sensor.available
+                                              ? Colors.green
+                                              : Colors.red,
+                                        ),
+                                        textAlign: TextAlign.center,
                                       ),
                                     ],
                                   ),
-                                  const SizedBox(height: 10),
-                                  Text(
-                                    sensor.available ? 'Available' : 'Occupied',
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      color: sensor.available
-                                          ? Colors.green
-                                          : Colors.red,
-                                    ),
-                                  ),
-                                ],
+                                ),
                               ),
-                            ),
-                          ))
-                      .toList(),
+                            ))
+                        .toList(),
+                  ),
                 ),
-              ),
+              )
             ],
           );
         },

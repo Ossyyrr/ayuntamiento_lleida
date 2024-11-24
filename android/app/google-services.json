@@ -1,0 +1,83 @@
+{
+  "project_info": {
+    "project_number": "405285466597",
+    "firebase_url": "https://lego-68f92-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "lego-68f92",
+    "storage_bucket": "lego-68f92.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:405285466597:android:9db48e085e7352b8eebf0c",
+        "android_client_info": {
+          "package_name": "com.ayuntam"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "405285466597-4ce5dp9o8kod4gs6tfrfknlqj15o8sa9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC6vhdfKD5S26jklxeomS_UMQQ-Eex13qg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "405285466597-4ce5dp9o8kod4gs6tfrfknlqj15o8sa9.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "405285466597-rstel8qerq3i12p2bqn8fr6n7knv9trn.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.lego"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:405285466597:android:dbb294fbe191b51beebf0c",
+        "android_client_info": {
+          "package_name": "com.example.lego"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "405285466597-4ce5dp9o8kod4gs6tfrfknlqj15o8sa9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC6vhdfKD5S26jklxeomS_UMQQ-Eex13qg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "405285466597-4ce5dp9o8kod4gs6tfrfknlqj15o8sa9.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "405285466597-rstel8qerq3i12p2bqn8fr6n7knv9trn.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.lego"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

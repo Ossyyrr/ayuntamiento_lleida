@@ -2,9 +2,9 @@ import 'package:ayuntamiento/firebase_options.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-import 'data/services/firebase_service.dart';
 import 'presentation/home_screen.dart';
 
 void main() async {
@@ -14,17 +14,23 @@ void main() async {
   );
 
   // Solicita permisos para recibir notificaciones (solo en iOS)
-  FirebaseMessaging messaging = FirebaseMessaging.instance;
   FirebaseFirestore.instance.settings = const Settings(
     persistenceEnabled: true,
     cacheSizeBytes: Settings.CACHE_SIZE_UNLIMITED,
   );
+
+  if (!kIsWeb) tokenPush();
+
+  runApp(const MyApp());
+}
+
+void tokenPush() async {
+  FirebaseMessaging messaging = FirebaseMessaging.instance;
   NotificationSettings settings = await messaging.requestPermission(
     alert: true,
     badge: true,
     sound: true,
   );
-
   // Obtén el token APNS (solo en iOS)
   String? apnsToken = await messaging.getAPNSToken();
   print("APNS Token: $apnsToken");
@@ -32,13 +38,6 @@ void main() async {
   // Obtén el token para las notificaciones push
   String? token = await messaging.getToken();
   print("Token de notificaciones push: $token");
-
-  // Accede a todas las colecciones en Cloud Firestore
-  final parkings = await fetchParkings();
-  print(parkings);
-  fetchSensorData();
-
-  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {

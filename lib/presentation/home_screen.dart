@@ -68,12 +68,12 @@ class HomeScreen extends StatelessWidget {
                             return const Text("Loading");
                           }
 
-                          final double availableSensors = snapshot.data!
-                                  .where((sensor) => sensor.available)
-                                  .length /
-                              snapshot.data!.length;
-
-                          return ProgressBar(value: availableSensors);
+                          return ProgressBar(
+                            total: snapshot.data!.length,
+                            free: snapshot.data!
+                                .where((sensor) => sensor.available)
+                                .length,
+                          );
                         },
                       ),
                     ],

@@ -27,16 +27,17 @@ class ParkingDetail extends StatelessWidget {
             return const Text("Loading");
           }
           snapshot.data!.sort((a, b) => a.spot.compareTo(b.spot));
-          // % de sensores disponiblesç
-          final double availableSensors =
-              snapshot.data!.where((sensor) => sensor.available).length /
-                  snapshot.data!.length;
 
           return Column(
             children: [
               Card(
                   margin: const EdgeInsets.all(24),
-                  child: ProgressBar(value: availableSensors)),
+                  child: ProgressBar(
+                    total: snapshot.data!.length,
+                    free: snapshot.data!
+                        .where((sensor) => sensor.available)
+                        .length,
+                  )),
               Expanded(
                 child: SingleChildScrollView(
                   child: Wrap(

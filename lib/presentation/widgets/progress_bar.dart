@@ -3,11 +3,15 @@ import 'package:flutter/material.dart';
 class ProgressBar extends StatelessWidget {
   const ProgressBar({
     super.key,
-    required this.value,
+    required this.total,
+    required this.free,
   });
-  final double value;
+  final int total;
+  final int free;
   @override
   Widget build(BuildContext context) {
+    final percent = (free / total);
+
     return Padding(
       padding: const EdgeInsets.all(24),
       child: Row(
@@ -16,7 +20,7 @@ class ProgressBar extends StatelessWidget {
             child: SizedBox(
               width: double.infinity,
               child: LinearProgressIndicator(
-                value: value,
+                value: percent,
                 backgroundColor: Colors.grey[300],
                 valueColor:
                     const AlwaysStoppedAnimation<Color>(Colors.blueAccent),
@@ -24,7 +28,13 @@ class ProgressBar extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 10),
-          Text(' ${(value * 100).toStringAsFixed(0)}%'),
+          Text(
+            '$free/$total',
+            style: const TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
         ],
       ),
     );

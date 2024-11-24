@@ -4,6 +4,9 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 
+import 'data/services/firebase_service.dart';
+import 'presentation/home_screen.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
@@ -12,6 +15,10 @@ void main() async {
 
   // Solicita permisos para recibir notificaciones (solo en iOS)
   FirebaseMessaging messaging = FirebaseMessaging.instance;
+  FirebaseFirestore.instance.settings = const Settings(
+    persistenceEnabled: true,
+    cacheSizeBytes: Settings.CACHE_SIZE_UNLIMITED,
+  );
   NotificationSettings settings = await messaging.requestPermission(
     alert: true,
     badge: true,
@@ -27,31 +34,11 @@ void main() async {
   print("Token de notificaciones push: $token");
 
   // Accede a todas las colecciones en Cloud Firestore
+  final parkings = await fetchParkings();
+  print(parkings);
   fetchSensorData();
 
   runApp(const MyApp());
-}
-
-void fetchSensorData() async {
-  // Referenciar el documento específico "s1" en la subcolección "sensors"
-  final sensorDoc = FirebaseFirestore.instance
-      .collection('parkings') // Colección principal
-      .doc('p1') // Documento padre
-      .collection('sensors') // Subcolección
-      .doc('s1'); // Documento específico
-
-  try {
-    // Obtener los datos del documento "s1"
-    DocumentSnapshot snapshot = await sensorDoc.get();
-
-    if (snapshot.exists) {
-      print('Datos de s1: ${snapshot.data()}');
-    } else {
-      print('El documento s1 no existe en sensors.');
-    }
-  } catch (e) {
-    print('Error al obtener los datos de s1: $e');
-  }
 }
 
 class MyApp extends StatelessWidget {
@@ -64,23 +51,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const MyHomePage(),
-    );
-  }
-}
-
-class MyHomePage extends StatelessWidget {
-  const MyHomePage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Flutter Demo Home Page'),
-      ),
-      body: const Center(
-        child: Text('Hello World'),
-      ),
+      home: const HomeScreen(),
     );
   }
 }

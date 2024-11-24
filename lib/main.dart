@@ -1,5 +1,6 @@
 import 'package:ayuntamiento/firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 
@@ -24,6 +25,17 @@ void main() async {
   // Obtén el token para las notificaciones push
   String? token = await messaging.getToken();
   print("Token de notificaciones push: $token");
+
+  final database = FirebaseDatabase.instance;
+
+  try {
+    // Lee el documento 'parkings'
+    DatabaseReference parkingsRef = database.ref('parkings');
+    DataSnapshot snapshot = await parkingsRef.get();
+    print('Datos de parkings: ${snapshot.value}');
+  } catch (e) {
+    print('Error al obtener los datos de parkings: $e');
+  }
 
   runApp(const MyApp());
 }
